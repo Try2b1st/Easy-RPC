@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.wgz</groupId>
-            <artifactId>rpc-easy</artifactId>
+            <artifactId>rpc-easy-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
