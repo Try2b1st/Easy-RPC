@@ -2,6 +2,7 @@ package org.wgz.proxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import org.wgz.RpcApplication;
 import org.wgz.model.RpcRequest;
 import org.wgz.model.RpcResponse;
 import org.wgz.serializer.JdkSerializer;
@@ -52,7 +53,7 @@ public class ServiceProxy implements InvocationHandler {
             byte[] result;
 
             //发起请求
-            try (HttpResponse httpResponse = HttpRequest.post("htttp://localhost:8080")
+            try (HttpResponse httpResponse = HttpRequest.post("http://localhost:" + RpcApplication.getInstance().getPort())
                     .body(bytes)
                     .execute()) {
                 result = httpResponse.bodyBytes();

@@ -4,6 +4,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.wgz.model.RpcRequest;
 import org.wgz.model.RpcResponse;
 import org.wgz.registry.LocalRegistry;
@@ -16,6 +17,7 @@ import java.lang.reflect.Method;
 /**
  * HTTP 请求处理
  */
+@Slf4j
 public class HttpServerHandle implements Handler<HttpServerRequest> {
 
     @Override
@@ -53,7 +55,7 @@ public class HttpServerHandle implements Handler<HttpServerRequest> {
                 //获取服务实现类和服务的方法
                 Class<?> implClass = LocalRegistry.getService(serviceName);
                 Method method = implClass.getMethod(methodName, parameterTypes);
-                Object result = method.invoke(implClass, args);
+                Object result = method.invoke(implClass.getDeclaredConstructor().newInstance(), args);
 
                 //封装返回结果
                 rpcResponse.setData(result);
@@ -61,7 +63,7 @@ public class HttpServerHandle implements Handler<HttpServerRequest> {
                 rpcResponse.setMessage("OK");
 
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info(e.getMessage());
                 rpcResponse.setException(e);
                 rpcResponse.setMessage(e.getMessage());
             }
