@@ -1,0 +1,2 @@
+json=org.wgz.serializer.JsonSerializer
+kryo=org.wgz.serializer.KryoSerializer
