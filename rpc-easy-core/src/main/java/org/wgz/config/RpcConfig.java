@@ -1,6 +1,7 @@
 package org.wgz.config;
 
 import lombok.Data;
+import org.wgz.serializer.SerializerKey;
 
 /**
  * Rpc基本配置
@@ -32,4 +33,9 @@ public class RpcConfig {
      * 是否支持Mock模拟调用
      */
     private Boolean mock = false;
+
+    /**
+     * 序列化器
+     */
+    private String serializerKey = SerializerKey.JDK;
 }

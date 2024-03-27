@@ -5,8 +5,8 @@ import cn.hutool.http.HttpResponse;
 import org.wgz.RpcApplication;
 import org.wgz.model.RpcRequest;
 import org.wgz.model.RpcResponse;
-import org.wgz.serializer.JdkSerializer;
 import org.wgz.serializer.Serializer;
+import org.wgz.serializer.SerializerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -38,7 +38,7 @@ public class ServiceProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         //指定序列化器
-        Serializer serializer = new JdkSerializer();
+        Serializer serializer = SerializerFactory.getInstance(RpcApplication.getInstance().getSerializerKey());
 
         //构造请求
         RpcRequest rpcRequest = RpcRequest.builder()
