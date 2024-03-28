@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.wgz.constant.RpcConstant;
 
 import java.io.Serializable;
 
@@ -16,6 +17,11 @@ public class RpcRequest implements Serializable {
      * 服务名称
      */
     private String serviceName;
+
+    /**
+     * 请求服务的版本
+     */
+    private String serviceVersion = RpcConstant.DEFAULT_SERVICE_VERSION;
 
     /**
      * 方法名称

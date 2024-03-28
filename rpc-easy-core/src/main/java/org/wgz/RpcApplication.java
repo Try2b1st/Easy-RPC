@@ -1,8 +1,11 @@
 package org.wgz;
 
 import lombok.extern.slf4j.Slf4j;
+import org.wgz.config.RegistryConfig;
 import org.wgz.config.RpcConfig;
 import org.wgz.constant.RpcConstant;
+import org.wgz.registry.Registry;
+import org.wgz.registry.RegistryFactory;
 import org.wgz.utils.ConfigUtils;
 
 /**
@@ -23,6 +26,12 @@ public class RpcApplication {
     public static void init(RpcConfig newRpcConfig) {
         rpcConfig = newRpcConfig;
         log.info("rpc init config = {}", newRpcConfig.toString());
+
+        //加载注册中心
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
+        log.info("Registry init config = {}", registryConfig);
     }
 
 

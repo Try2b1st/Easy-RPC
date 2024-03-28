@@ -1,2 +1,0 @@
-jdk=org.wgz.serializer.JdkSerializer
-hessian=org.wgz.serializer.HessianSerializer

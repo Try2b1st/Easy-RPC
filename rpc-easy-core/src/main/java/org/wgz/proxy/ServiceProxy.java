@@ -1,15 +1,22 @@
 package org.wgz.proxy;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import org.wgz.RpcApplication;
+import org.wgz.config.RpcConfig;
+import org.wgz.constant.RpcConstant;
 import org.wgz.model.RpcRequest;
 import org.wgz.model.RpcResponse;
+import org.wgz.model.ServiceMetaInfo;
+import org.wgz.registry.Registry;
+import org.wgz.registry.RegistryFactory;
 import org.wgz.serializer.Serializer;
 import org.wgz.serializer.SerializerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 服务代理
@@ -41,8 +48,9 @@ public class ServiceProxy implements InvocationHandler {
         Serializer serializer = SerializerFactory.getInstance(RpcApplication.getInstance().getSerializerKey());
 
         //构造请求
+        String serviceName = method.getDeclaringClass().getName();
         RpcRequest rpcRequest = RpcRequest.builder()
-                .serviceName(method.getDeclaringClass().getName())
+                .serviceName(serviceName)
                 .methodName(method.getName())
                 .parameterTypes(method.getParameterTypes())
                 .args(args).build();
@@ -52,8 +60,23 @@ public class ServiceProxy implements InvocationHandler {
             byte[] bytes = serializer.serialize(rpcRequest);
             byte[] result;
 
+            //从服务中心获取服务提供者请求地址
+            RpcConfig rpcConfig = RpcApplication.getInstance();
+            Registry registry = RegistryFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
+            ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
+            serviceMetaInfo.setServiceName(serviceName);
+            serviceMetaInfo.setServiceVersion(RpcConstant.DEFAULT_SERVICE_VERSION);
+            List<ServiceMetaInfo> serviceMetaInfoList = registry.getServiceMetaInfoList(serviceMetaInfo.getServiceKey());
+            if(CollUtil.isEmpty(serviceMetaInfoList)){
+               throw new RuntimeException("暂无服务地址");
+            }
+
+            //目前默认取第一个
+            serviceMetaInfo = serviceMetaInfoList.get(0);
+
+
             //发起请求
-            try (HttpResponse httpResponse = HttpRequest.post("http://localhost:" + RpcApplication.getInstance().getPort())
+            try (HttpResponse httpResponse = HttpRequest.post(serviceMetaInfo.getServiceAddress())
                     .body(bytes)
                     .execute()) {
                 result = httpResponse.bodyBytes();

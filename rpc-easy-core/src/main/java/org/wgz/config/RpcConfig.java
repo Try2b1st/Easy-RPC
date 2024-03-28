@@ -1,6 +1,7 @@
 package org.wgz.config;
 
 import lombok.Data;
+import org.wgz.constant.RpcConstant;
 import org.wgz.serializer.SerializerKey;
 
 /**
@@ -38,4 +39,9 @@ public class RpcConfig {
      * 序列化器
      */
     private String serializerKey = SerializerKey.JDK;
+
+    /**
+     * 注册中心相关配置
+     */
+    private RegistryConfig registryConfig = new RegistryConfig();
 }

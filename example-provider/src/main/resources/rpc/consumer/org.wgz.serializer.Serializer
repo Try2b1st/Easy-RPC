@@ -1,2 +1,2 @@
 json=org.wgz.serializer.JsonSerializer
-kryo=org.wgz.serializer.KryoSerializer
+jdk=org.wgz.serializer.JdkSerializer
